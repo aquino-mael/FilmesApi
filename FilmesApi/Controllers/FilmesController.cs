@@ -12,9 +12,9 @@ namespace FilmesApi.Controllers
         private List<Filme> filmes = new List<Filme>();
         
         [HttpPost]
-        public void AddMovie(Filme addMovieDto)
+        public void AddMovie([FromBody] Filme filme)
         {
-            Console.WriteLine(addMovieDto.Title);
+            
         }
     }
 }
