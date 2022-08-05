@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FilmesApi.Models;
+﻿using FilmesApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmesApi.Controllers
@@ -12,16 +10,30 @@ namespace FilmesApi.Controllers
         private static List<Filme> filmes = new List<Filme>();
         
         [HttpPost]
-        public void AddMovie([FromBody] Filme filme)
+        public IActionResult AddMovie([FromBody] Filme filme)
         {
             filme.Id = Guid.NewGuid();
             filmes.Add(filme);
+            return CreatedAtAction(nameof(RecuperaFilme), new { Id = filme.Id }, filme);
         }
         
         [HttpGet]
-        public IEnumerable<Filme> ListarFilmes()
+        public IActionResult ListarFilmes()
         {
-            return filmes;
+            return Ok(filmes);
+        }
+
+        [HttpGet("{Id}")]
+        public IActionResult RecuperaFilme(Guid Id)
+        {
+            var filme = filmes.FirstOrDefault(f => f.Id.Equals(Id));
+
+            if (filme == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(filme);
         }
     }
 }
