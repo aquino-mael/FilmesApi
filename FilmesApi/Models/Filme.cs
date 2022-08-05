@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FilmesApi.Models
 {
     public class Filme
     {
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Campo titulo é obrigatório.")]
         public string Title { get; set; }
         
