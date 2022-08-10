@@ -1,4 +1,5 @@
 ﻿using FilmesApi.Models;
+using FilmesApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmesApi.Controllers
@@ -7,28 +8,33 @@ namespace FilmesApi.Controllers
     [Route("[controller]")]
     public class FilmesController : ControllerBase
     {
-        private static List<Filme> filmes = new List<Filme>();
+        private readonly FilmeService _filmeService;
+
+        public FilmesController(FilmeService filmeService)
+        {
+            _filmeService = filmeService;
+        }
         
         [HttpPost]
-        public IActionResult AddMovie([FromBody] Filme filme)
+        public async Task<IActionResult> AddMovie([FromBody] Filme filme)
         {
-            filme.Id = Guid.NewGuid();
-            filmes.Add(filme);
-            return CreatedAtAction(nameof(RecuperaFilme), new { Id = filme.Id }, filme);
+            var result = await _filmeService.CreateFilmeAsync(filme);
+            return CreatedAtAction(nameof(RecuperaFilme), new { Id = result.Id }, result);
         }
         
         [HttpGet]
-        public IActionResult ListarFilmes()
+        public async Task<IActionResult> ListarFilmes()
         {
+            var filmes = await _filmeService.GetAsync();
             return Ok(filmes);
         }
 
-        [HttpGet("{Id}")]
-        public IActionResult RecuperaFilme(Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> RecuperaFilme(Guid id)
         {
-            var filme = filmes.FirstOrDefault(f => f.Id.Equals(Id));
+            var filme = await _filmeService.GetAsync(id);
 
-            if (filme == null)
+            if (filme is null)
             {
                 return NotFound();
             }

@@ -5,7 +5,19 @@ namespace FilmesApi.Models
 {
     public class Filme
     {
+        public Filme(Guid id, string title, string gender, string director, int durationInMinutes)
+        {
+            Id = id;
+            Title = title;
+            Gender = gender;
+            Director = director;
+            DurationInMinutes = durationInMinutes;
+        }
+        
+        [Key]
+        [Required]
         public Guid Id { get; set; }
+
         [Required(ErrorMessage = "Campo titulo é obrigatório.")]
         public string Title { get; set; }
         
